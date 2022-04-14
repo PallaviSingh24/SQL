@@ -1,0 +1,39 @@
+--Rank,Aggregated function,Lead & Lag,rolling average
+ 
+ Provide employee name, salary, department , department avg Salary
+ and employees rank in their department based on their salary.
+
+select
+  e.first_name,
+  e.salary,
+  d.name,
+  avg_sal.dept_avg_sal,
+  avg_sal.Rnk
+  from employees e
+join
+(select avg(e.salary) as dept_avg_sal,e.department_id,DENSE_RANK() over ( order by avg(e.salary)desc ) as Rnk from employees e join  departments d
+on e.department_id=d.id
+group by e.department_id) avg_sal
+on e.department_id=avg_sal.department_id
+join departments d
+on e.department_id=d.id
+
+write sql query to list all distinct projects and how many days of gap was between each projects.
+ Gap = ( end date of previous project - start date of new project)
+List project in order of their end date
+
+
+select title,
+      start_date,
+      end_date,
+      datediff(start_date,lag(end_date) over(order by start_date)) as days_bw_projects
+ from projects;
+ 
+ write sql query to provide name, salary and running_total
+ 
+ select first_name,
+       salary,
+       sum(salary) over (order by salary ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW) as running_total
+from employees;
+ 
+
